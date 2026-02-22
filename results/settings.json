@@ -1,0 +1,21 @@
+{
+    "python.defaultInterpreterPath": "backend/venv/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "files.associations": {
+        "*.html": "html",
+        "*.css": "css",
+        "*.js": "javascript"
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSave": true
+    },
+    "liveServer.settings.port": 5500,
+    "liveServer.settings.root": "/frontend",
+    "liveServer.settings.CustomBrowser": "chrome",
+    "python.analysis.typeCheckingMode": "basic"
+}
