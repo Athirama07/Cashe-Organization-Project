@@ -154,10 +154,5 @@ def generate_miss_data():
     }
 
 if __name__ == '__main__':
-    print("=" * 50)
-    print("Cache Simulator Backend Server")
-    print("=" * 50)
-    print("Starting server at http://localhost:5000")
-    print("Press Ctrl+C to stop")
-    print("=" * 50)
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
