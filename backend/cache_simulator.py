@@ -135,6 +135,13 @@ class CacheSimulator:
         miss_rate = self.misses / self.accesses if self.accesses > 0 else 0
         amat = self.hit_time + miss_rate * self.miss_penalty
         
+        # compute Cache Efficiency Score (CES)
+        # use hit rate as percentage to mirror the examples: CES = HitRate% / (AMAT * MemoryTraffic)
+        if amat > 0 and self.memory_traffic > 0:
+            ces = (hit_rate * 100) / (amat * self.memory_traffic)
+        else:
+            ces = 0
+        
         return {
             'Accesses': self.accesses,
             'Hits': self.hits,
@@ -143,5 +150,6 @@ class CacheSimulator:
             'Miss Rate': miss_rate,
             'AMAT': amat,
             'Cycles': self.cycles,
-            'Memory Traffic': self.memory_traffic
+            'Memory Traffic': self.memory_traffic,
+            'CES': ces
         }

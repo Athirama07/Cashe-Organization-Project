@@ -91,7 +91,6 @@ function initializeEventListeners() {
     });
 
     // Navigation links
-    document.getElementById('docsLink').addEventListener('click', showDocumentation);
     document.getElementById('aboutLink').addEventListener('click', showAbout);
 }
 
@@ -365,6 +364,16 @@ function updateResults(results) {
     document.getElementById('missRateValue').textContent = results.missRate;
     document.getElementById('amatValue').textContent = results.amat;
     document.getElementById('trafficValue').textContent = results.memoryTraffic;
+    if (results.ces !== undefined) {
+        document.getElementById('cesValue').textContent = results.ces;
+        // update CES card change placeholder
+        document.getElementById('cesChange').textContent = '';
+        // also update CES tab current value if present
+        const current = document.getElementById('currentCESValue');
+        if (current) {
+            current.textContent = results.ces;
+        }
+    }
 
     document.getElementById('hitRateChange').textContent = results.hitRateChange;
     document.getElementById('missRateChange').textContent = results.missRateChange;
@@ -398,6 +407,12 @@ function updateCharts(results) {
 
     // Update miss chart
     if (charts.miss && results.missClassification) {
+    }
+
+    // rerun best-CES highlighting in case table was regenerated dynamically
+    highlightBestCES();
+
+    if (charts.miss && results.missClassification) {
         charts.miss.data.datasets[0].data = [
             results.missClassification.compulsory,
             results.missClassification.capacity,
@@ -409,7 +424,25 @@ function updateCharts(results) {
 
 // Save Configuration
 function saveConfiguration() {
+    // persist in localStorage for quick reload
     localStorage.setItem('cacheConfig', JSON.stringify(currentConfig));
+
+    // also trigger file download so user gets a copy
+    try {
+        const data = JSON.stringify(currentConfig, null, 2);
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cache_config.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error('Download error', err);
+    }
+
     showToast('Configuration saved successfully!', 'success');
 }
 
@@ -517,6 +550,7 @@ function loadSampleData() {
         missRate: '5.8%',
         amat: '2.4 cycles',
         memoryTraffic: '1,234 blocks',
+        ces: '0.0318',
         hitRateChange: '+2.3%',
         missRateChange: '-1.2%',
         amatChange: '-0.3',
@@ -526,6 +560,27 @@ function loadSampleData() {
     };
 
     updateResults(sampleResults);
+    highlightBestCES();
+}
+
+// Highlight highest CES in the comparison table
+function highlightBestCES() {
+    const rows = document.querySelectorAll('#comparisonBody tr');
+    let best = -Infinity;
+    let bestRow = null;
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length === 0) return;
+        const cesText = cells[cells.length - 1].innerText;
+        const val = parseFloat(cesText);
+        if (!isNaN(val) && val > best) {
+            best = val;
+            bestRow = row;
+        }
+    });
+    if (bestRow) {
+        bestRow.classList.add('table-success');
+    }
 }
 // Update the runSimulation function in script.js
 async function runSimulation() {
@@ -586,6 +641,7 @@ async function runSimulation() {
             missRate: '5.8%',
             amat: '2.4 cycles',
             memoryTraffic: '1,234 blocks',
+            ces: '0.0318',
             hitRateChange: '+2.3%',
             missRateChange: '-1.2%',
             amatChange: '-0.3',

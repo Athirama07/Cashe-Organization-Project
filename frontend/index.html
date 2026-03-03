@@ -33,11 +33,6 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="docsLink">
-                            <i class="fas fa-book me-1"></i>Documentation
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="#" id="aboutLink">
                             <i class="fas fa-info-circle me-1"></i>About
                         </a>
@@ -192,6 +187,12 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="ces-tab" data-bs-toggle="tab" data-bs-target="#ces"
+                            type="button" role="tab">
+                            <i class="fas fa-bolt me-2"></i>CES Metric
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="adaptive-tab" data-bs-toggle="tab" data-bs-target="#adaptive"
                             type="button" role="tab">
                             <i class="fas fa-cogs me-2"></i>Adaptive Monitor
@@ -289,6 +290,27 @@
                                                 </div>
                                                 <div class="bg-warning bg-opacity-10 p-3 rounded">
                                                     <i class="fas fa-database fa-2x text-warning"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CES Card -->
+                                <div class="col-md-3 mb-3">
+                                    <div class="card stat-card h-100 border-secondary">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-muted mb-2">Cache Efficiency Score</h6>
+                                                    <h3 class="mb-0" id="cesValue">0.0318</h3>
+                                                    <small class="text-secondary">
+                                                        <i class="fas fa-bolt me-1"></i>
+                                                        <span id="cesChange">--</span>
+                                                    </small>
+                                                </div>
+                                                <div class="bg-secondary bg-opacity-10 p-3 rounded">
+                                                    <i class="fas fa-chart-line fa-2x text-secondary"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -427,6 +449,7 @@
                                                 <th>AMAT (cycles)</th>
                                                 <th>Memory Traffic</th>
                                                 <th>Execution Time</th>
+                                                <th>CES Score</th>
                                             </tr>
                                         </thead>
                                         <tbody id="comparisonBody">
@@ -438,6 +461,7 @@
                                                 <td>3.2</td>
                                                 <td>2,456</td>
                                                 <td>1,234</td>
+                                                <td>0.0113</td>
                                             </tr>
                                             <tr class="table-primary">
                                                 <td><strong>2-Way Set Associative</strong></td>
@@ -447,6 +471,7 @@
                                                 <td>2.4</td>
                                                 <td>1,234</td>
                                                 <td>987</td>
+                                                <td>0.0318</td>
                                             </tr>
                                             <tr>
                                                 <td>4-Way Set Associative</td>
@@ -456,6 +481,7 @@
                                                 <td>2.1</td>
                                                 <td>1,567</td>
                                                 <td>1,023</td>
+                                                <td>0.0291</td>
                                             </tr>
                                             <tr>
                                                 <td>Fully Associative</td>
@@ -465,6 +491,7 @@
                                                 <td>1.9</td>
                                                 <td>1,789</td>
                                                 <td>1,156</td>
+                                                <td>0.0283</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -473,57 +500,86 @@
                         </div>
                     </div>
 
-                    <!-- Adaptive Monitor Tab -->
-                    <div class="tab-pane fade" id="adaptive" role="tabpanel">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card shadow-sm mb-3">
-                                    <div class="card-header bg-warning text-dark">
-                                        <h6 class="mb-0">
-                                            <i class="fas fa-robot me-2"></i>
-                                            Adaptive Policy Monitor
-                                        </h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <canvas id="adaptiveChart" style="height: 250px;"></canvas>
+                    <!-- CES Metric Tab -->
+                    <div class="tab-pane fade" id="ces" role="tabpanel">
+                        <div class="card shadow-sm">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-bolt me-2"></i>
+                                    Cache Efficiency Score (CES)
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">
+                                    <strong>Cache Efficiency Score</strong> is a composite metric that
+                                    balances hit rate, average memory access time (AMAT), and memory
+                                    traffic to give a single measure of overall cache effectiveness.
+                                    The formula we use is:
+                                    <code>CES = (Hit Rate %)/(AMAT × Memory Traffic)</code>.
+                                    A higher score means a more efficient cache configuration.
+                                </p>
+                                <div class="mb-3">
+                                    <h5>Current Configuration Score:</h5>
+                                    <p id="currentCESValue" class="fs-4">--</p>
+                                </div>
+                                <p class="small">
+                                    When you run a simulation the dashboard computes CES; this panel
+                                    simply explains the metric and shows the latest value.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- Adaptive Monitor Tab -->
+                        <div class="tab-pane fade" id="adaptive" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm mb-3">
+                                        <div class="card-header bg-warning text-dark">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-robot me-2"></i>
+                                                Adaptive Policy Monitor
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="adaptiveChart" style="height: 250px;"></canvas>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card shadow-sm mb-3">
-                                    <div class="card-header">
-                                        <h6 class="mb-0">
-                                            <i class="fas fa-history me-2"></i>
-                                            Policy Adaptation History
-                                        </h6>
-                                    </div>
-                                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                                        <ul class="list-group" id="adaptationHistory">
-                                            <li
-                                                class="list-group-item d-flex justify-content-between align-items-center">
-                                                <span><i class="fas fa-exchange-alt me-2 text-primary"></i>Switched to
-                                                    LRU</span>
-                                                <span class="badge bg-primary">t=1000</span>
-                                            </li>
-                                            <li
-                                                class="list-group-item d-flex justify-content-between align-items-center">
-                                                <span><i class="fas fa-exchange-alt me-2 text-success"></i>Block size:
-                                                    32→64</span>
-                                                <span class="badge bg-success">t=2000</span>
-                                            </li>
-                                            <li
-                                                class="list-group-item d-flex justify-content-between align-items-center">
-                                                <span><i
-                                                        class="fas fa-exchange-alt me-2 text-warning"></i>Associativity:
-                                                    2→4</span>
-                                                <span class="badge bg-warning">t=3000</span>
-                                            </li>
-                                        </ul>
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm mb-3">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-history me-2"></i>
+                                                Policy Adaptation History
+                                            </h6>
+                                        </div>
+                                        <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                                            <ul class="list-group" id="adaptationHistory">
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <span><i class="fas fa-exchange-alt me-2 text-primary"></i>Switched to
+                                                        LRU</span>
+                                                    <span class="badge bg-primary">t=1000</span>
+                                                </li>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <span><i class="fas fa-exchange-alt me-2 text-success"></i>Block size:
+                                                        32→64</span>
+                                                    <span class="badge bg-success">t=2000</span>
+                                                </li>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <span><i
+                                                            class="fas fa-exchange-alt me-2 text-warning"></i>Associativity:
+                                                        2→4</span>
+                                                    <span class="badge bg-warning">t=3000</span>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>

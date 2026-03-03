@@ -5,10 +5,32 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Flask Backend",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/app.py",
+            "console": "integratedTerminal",
+            "env": {
+                "FLASK_APP": "backend/app.py",
+                "FLASK_DEBUG": "1"
+            },
+            "justMyCode": true
+        },
+        {
+            "name": "Launch Browser",
             "type": "chrome",
             "request": "launch",
-            "name": "Open index.html",
-            "file": "c:\\Users\\anilc\\OneDrive\\Desktop - Copy\\Desktop\\coa project\\results\\index.html"
+            "url": "http://localhost:5000",
+            "webRoot": "${workspaceFolder}/frontend"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Full Application",
+            "configurations": [
+                "Python: Flask Backend",
+                "Launch Browser"
+            ]
         }
     ]
 }

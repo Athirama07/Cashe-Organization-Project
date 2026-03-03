@@ -1,0 +1,11 @@
+{
+    "name": "coa-project",
+    "version": "1.0.0",
+    "description": "Cache Organization and Policy Simulation",
+    "scripts": {
+        "dev": "python backend/app.py",
+        "start": "python backend/app.py"
+    },
+    "author": "",
+    "license": "ISC"
+}

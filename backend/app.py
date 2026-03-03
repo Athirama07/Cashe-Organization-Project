@@ -1,8 +1,16 @@
-from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
 import sys
 import os
 import json
+
+# guard imports so missing packages give a useful message
+try:
+    from flask import Flask, request, jsonify, send_from_directory
+    from flask_cors import CORS
+except ImportError as imp_err:
+    print("ERROR: unable to import Flask or flask_cors.\n" +
+          "Please install the web dependencies by running:\n" +
+          "    pip install -r backend/requirements.txt\nor the top-level requirements file if it has been updated.")
+    sys.exit(1)
 
 # Add both the current directory (results/) and its parent (project root)
 # to sys.path so imports work regardless of where the server is started.
@@ -121,6 +129,7 @@ def run_cache_simulation(config):
         'missRate': f"{stats['Miss Rate']:.1%}",
         'amat': f"{stats['AMAT']:.2f} cycles",
         'memoryTraffic': f"{stats['Memory Traffic']:,} blocks",
+        'ces': f"{stats.get('CES', 0):.4f}",
         'cycles': stats['Cycles'],
         'hitRateChange': f"+{(stats['Hit Rate'] - 0.9) * 100:.1f}%",
         'missRateChange': f"-{(0.1 - stats['Miss Rate']) * 100:.1f}%",

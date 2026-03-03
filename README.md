@@ -11,9 +11,14 @@ This project simulates cache behavior and compares policies using various access
    .\.venv\Scripts\Activate.ps1
    ```
 
-2. Install required packages:
+2. Install required packages. There are two requirements files: the
+   top-level `requirements.txt` for analysis tools and the backend
+   `backend/requirements.txt` for the web dashboard.  The top‑level file
+   now includes the web dependencies so you can just run one command:
    ```sh
    pip install -r requirements.txt
+   # or, if you prefer to install them separately:
+   # pip install -r backend/requirements.txt
    ```
 
 ## Running
@@ -35,6 +40,11 @@ This project simulates cache behavior and compares policies using various access
   python backend/app.py
   ```
   Open `http://localhost:5000` in your browser to access the interactive dashboard.
+
+### VS Code (Recommended)
+1. Go to the **Run and Debug** view (Ctrl+Shift+D).
+2. Select **"Full Application"** from the dropdown.
+3. Press **F5** to start the backend and automatically open the dashboard in your browser.
 
 ## Notes
 

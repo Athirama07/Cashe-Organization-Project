@@ -40,6 +40,8 @@ def main():
             "Hit Rate": f"{stats['Hit Rate']:.2%}",
             "Miss Rate": f"{stats['Miss Rate']:.2%}",
             "AMAT": f"{stats['AMAT']:.2f} cycles",
+            "Memory Traffic": stats['Memory Traffic'],
+            "CES": f"{stats.get('CES',0):.4f}",
             "Cycles": stats['Cycles']
         })
     
@@ -47,6 +49,12 @@ def main():
     df_org = pd.DataFrame(org_results)
     print("\nCache Organization Comparison:")
     print(df_org.to_string(index=False))
+    # highlight best CES for demonstration
+    try:
+        best_idx = df_org['CES'].astype(float).idxmax()
+        print(f"\nBest overall CES: {df_org.loc[best_idx, 'Organization']} ({df_org.loc[best_idx, 'CES']})")
+    except Exception:
+        pass
     
     # Part 2: Block Size Impact
     print("\n[2] Analyzing Block Size Impact...")
