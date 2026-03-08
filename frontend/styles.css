@@ -24,12 +24,20 @@ body {
     color: var(--warning-color);
 }
 
-/* Card Styles */
+/* Card Styles – change these values to affect every card at once */
+:root {
+    /* card-specific custom properties make global adjustments easy */
+    --card-border-radius: 12px;
+    --card-shadow-transition: transform 0.2s, box-shadow 0.2s;
+    --card-min-height: 0; /* set a minimum height for uniform layouts */
+}
+
 .card {
     border: none;
-    border-radius: 12px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: var(--card-border-radius);
+    transition: var(--card-shadow-transition);
     overflow: hidden;
+    min-height: var(--card-min-height);
 }
 
 .card:hover {
@@ -89,14 +97,41 @@ body {
     background: #e9ecef;
 }
 
+/* Stats Container - Single row horizontal layout with responsive wrapping */
+.stats-container {
+    display: flex;
+    flex-wrap: nowrap; /* Keep all cards in one row by default */
+    gap: 1.25rem;
+    width: 100%;
+    align-items: stretch;
+}
+
+/* column wrapper for stat cards - each takes equal space */
+.stat-col {
+    flex: 1 1 calc(20% - 1rem); /* 5 cards = 20% each, adjusted for gap */
+    display: flex;
+    min-width: 0; /* important: allows flex items to shrink below content size */
+}
+
 /* Stat Cards */
 .stat-card {
     border-left: 4px solid;
     border-radius: 8px;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.stat-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
 }
 
 .stat-card .card-body {
     padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .stat-card h6 {
@@ -112,6 +147,49 @@ body {
 
 .stat-card small {
     font-size: 0.8rem;
+}
+
+/* Responsive adjustments - wrap on smaller screens */
+@media (max-width: 1200px) {
+    .stats-container {
+        flex-wrap: wrap;
+    }
+    
+    .stat-col {
+        flex: 1 1 calc(50% - 0.625rem); /* 2 columns */
+    }
+}
+
+@media (max-width: 768px) {
+    .stat-col {
+        flex: 1 1 calc(50% - 0.625rem); /* Still 2 columns on tablets */
+    }
+    
+    .stat-card .card-body {
+        padding: 1rem;
+    }
+    
+    .stat-card h3 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-container {
+        gap: 1rem;
+    }
+    
+    .stat-col {
+        flex: 1 1 100%; /* 1 column on mobile */
+    }
+    
+    .stat-card h3 {
+        font-size: 1.3rem;
+    }
+    
+    .stat-card .card-body {
+        padding: 0.75rem;
+    }
 }
 
 /* Tab Styles */
